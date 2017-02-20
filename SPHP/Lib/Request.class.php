@@ -47,18 +47,21 @@ class Request
     }
 
     /**
+     * @param $key
      * @return mixed
      */
-    public function getSession()
+    public function getSession($key)
     {
-
+        return $this->getSessionInstance()->get($key);
     }
 
     /**
-     * @param mixed $session
+     * @param $key
+     * @param $value
      */
-    public function setSession($session)
+    public function setSession($key, $value)
     {
+        $this->getSessionInstance()->set($key,$value);
     }
 
     /**

@@ -24,33 +24,23 @@ define('SPHP_ROUTE_CONTROLLER','controller');
 define('SPHP_ROUTE_ACTION','action');
 define('SPHP_ROUTE_TARGET','target');
 
+define('SPHP_SESSION','session');
+define('SPHP_SESSION_NAME','name');
+define('SPHP_SESSION_SAVE_HANDLER','save_handler');
+define('SPHP_SESSION_SAVE_PATH','save_path');
+define('SPHP_SESSION_COOKIE_DOMAIN','cookie_domain');
+define('SPHP_SESSION_COOKIE_PATH','cookie_path');
+define('SPHP_SESSION_GC_MAXLIFETIME','gc_maxlifetime');
+
+define('SPHP_CACHE','cache');
+define('SPHP_CACHE_TYPE','type');
+define('SPHP_CACHE_HOST','host');
+define('SPHP_CACHE_PORT','port');
+define('SPHP_CACHE_AUTH','auth');
+define('SPHP_CACHE_TIMEOUT','timeout');
+define('SPHP_CACHE_DB','db');
+define('SPHP_CACHE_PREFIX','prefix');
+define('SPHP_CACHE_LENGTH','length');
 
 
-
-/**
-
- * 缓存相关
- */
-const
-CACHE = 'cache',
-CACHE_TYPE = 'type',
-CACHE_HOST = 'host',
-CACHE_PORT = 'port',
-CACHE_AUTH = 'auth',
-CACHE_TIMEOUT = 'timeout',
-CACHE_DB = 'db',
-CACHE_PREFIX = 'prefix',
-CACHE_LENGTH = 'length';
-
-/**
- * session相关
- */
-const
-SESSION = "session",
-SESSION_NAME = 'name',
-SESSION_SAVE_HANDLER = 'save_handler',
-SESSION_SAVE_PATH = 'save_path',
-SESSION_COOKIE_DOMAIN = 'cookie_domain',
-SESSION_COOKIE_PATH = 'cookie_path',
-SESSION_GC_MAXLIFETIME = 'gc_maxlifetime';
 

@@ -17,4 +17,8 @@ return array(
     ),
     SPHP_FUNSTIONS => ['test','test2'],
 
+    SPHP_SESSION => array(
+        SPHP_SESSION_SAVE_HANDLER => 'Redis',
+        SPHP_SESSION_SAVE_PATH=>'tcp://127.0.0.1:6379',
+    ),
 );

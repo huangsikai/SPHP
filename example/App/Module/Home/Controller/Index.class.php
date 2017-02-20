@@ -14,6 +14,8 @@ use SPHPCore\Lib\Mvc\Controller;
 class Index extends Controller
 {
     public function index(){
+//        $this->request->setSession('name','SKY');
+        echo $this->request->getSession('name');
         $this->forward('Index','detail');
     }
 
