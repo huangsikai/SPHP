@@ -156,7 +156,6 @@ class Action {
         if(class_exists($controllerClass)){
             HookAction::doHook('controller',array($controllerName,$actionName));
             $this->_controller = new $controllerClass($this->_request,$this->_response);
-            $this->_controller->__init();
             if(method_exists($this->_controller,$actionName)){
                 $this->_controller->$actionName();
             }else{

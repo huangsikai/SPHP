@@ -306,20 +306,20 @@ class MysqlExpression extends Expression{
     {
         $join = '';
         if(!empty($this->options[self::EXPLAIN_JOIN])){
-            $type = self::EXPRES_JOIN_INNER;
             foreach($this->options[self::EXPLAIN_JOIN] as $value){
                 if(!empty($value) && is_array($value)){
+                    if(isset($value[self::TAG_JOIN_TYPE])){
+                        $type = $value[self::TAG_JOIN_TYPE];
+                        unset($value[self::TAG_JOIN_TYPE]);
+                    }else{
+                        $type = self::EXPRES_JOIN_INNER;
+                    }
                     foreach($value as $k=>$v){
-                        if($k == self::TAG_JOIN_TYPE){
-                            $type = $v;
-                        }else{
-                            $join .= ' '.$type.' '.self::EXPRES_JOIN.' '.$this->config[SPHP_DB_PREFIX].$k .' '.self::EXPRES_ON.' '.$v;
-                        }
+                        $join .= ' '.$type.' '.self::EXPRES_JOIN.' '.$this->config[SPHP_DB_PREFIX].$k .' '.self::EXPRES_ON.' '.$v;
                     }
                 }
             }
         }
-
         return $join;
     }
 

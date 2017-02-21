@@ -12,9 +12,8 @@ use SPHPCore\Lib\Mvc\Controller;
 
 class Index extends Controller
 {
-    public function index(){
-        $this->assign('test','欢迎使用Simple PHP 框架');
-        $this->response->view();
-    }
 
+    public function index(){
+
+    }
 }

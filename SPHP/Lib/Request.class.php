@@ -65,6 +65,14 @@ class Request
     }
 
     /**
+     *
+     */
+    public function clearSession()
+    {
+        $this->getSessionInstance()->clear();
+    }
+
+    /**
      * 获取get参数
      * @param string $index
      * @param string $default

@@ -9,7 +9,7 @@ define('ENV','develop');
 define('MODULE','Home');
 
 ##相对web服务器根目录的子目录；  例子：web服务器根目录为www  example项目位于 www/SPHP/example
-define('SUB_DIR','SPHP/example');
+define('SUB_DIR','/SPHP/example');
 
 ##导入SPHP框架
 include '../../SPHP/S.class.php';

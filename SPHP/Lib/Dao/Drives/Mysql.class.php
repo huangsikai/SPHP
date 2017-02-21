@@ -96,6 +96,16 @@ class Mysql extends Drives
     }
 
 
+    public function exec($sql) {
+        try {
+            $statement = $this->_connector->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_SCROLL));
+            $statement->execute();
+            return $statement;
+        }catch(SPHPException $e){
+
+        }
+    }
+
 
     /**
      * 受影响行数

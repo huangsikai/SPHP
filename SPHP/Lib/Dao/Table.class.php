@@ -103,7 +103,7 @@ class Table
 
     /**
      * @param $data
-     * @return bool|mixed
+     * @return bool|int
      */
     public function insert($data){
         $result = false;
@@ -137,14 +137,18 @@ class Table
     /**
      * @param $data
      * @param null $primary
-     * @return mixed
+     * @return bool | int
      */
     public function update($data, $primary = null){
-        if(!empty($primary) && !empty($this->primaryKey))
-            $this->expression->setOptions(Expression::EXPLAIN_WHERE,array(array($this->primaryKey => $primary)));
-        $this->expression->update($data);
-        $execute = $this->db->getConnect()->execute($this->expression->getExpres(),$this->expression->getParameter());
-        return $execute->rowCount();
+        $result = false;
+        if(!empty($data) && is_array($data)){
+            if(!empty($primary) && !empty($this->primaryKey))
+                $this->expression->setOptions(Expression::EXPLAIN_WHERE,array(array($this->primaryKey => $primary)));
+            $this->expression->update($data);
+            $execute = $this->db->getConnect()->execute($this->expression->getExpres(),$this->expression->getParameter());
+            $result = $execute->rowCount();
+        }
+        return $result;
     }
 
 
@@ -169,7 +173,7 @@ class Table
      * @return array
      */
     public function findAll(){
-        $this->expression->select();
+        $this->expression->select();//echo $this->expression->getExpres();exit;
         $execute = $this->db->getConnect()->execute($this->expression->getExpres(),$this->expression->getParameter());
         $rows = array();
         while($row = $execute->fetchRow()){

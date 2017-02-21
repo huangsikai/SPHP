@@ -37,6 +37,13 @@ abstract class Drives
     abstract public function execute($sql,$params = array());
 
     /**
+     * 自定义sql
+     * @param $sql
+     * @return mixed
+     */
+    abstract public function exec($sql);
+
+    /**
      * 受影响行数
      * @return int
      */

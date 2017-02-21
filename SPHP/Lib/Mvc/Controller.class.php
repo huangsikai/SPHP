@@ -44,12 +44,13 @@ abstract class Controller
         $this->request = $request;
         $this->response = $response;
         unset($request,$response);
+        $this->__init();
     }
 
     /**
      * 初始化方法 给子控制器重写
      */
-    public function __init(){}
+    protected function __init(){}
 
     /**
      * 未知方法 给子控制器重写

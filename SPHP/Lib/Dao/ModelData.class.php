@@ -26,6 +26,30 @@ class ModelData extends ModelObject
         return $tableModel;
     }
 
+    /**
+     * @param $index
+     * @return string
+     */
+    private function propertyIndex($index){
+        $lcIndex = lcfirst($index);
+        if(isset($this->$index)){
+            return $index;
+        }elseif(isset($this->$lcIndex)){
+            return $lcIndex;
+        }else{
+            $index = '';
+            for($i=0;$i<strlen($lcIndex);$i++){
+                $ascii = ord($lcIndex{$i});
+                if($ascii >= 65 && $ascii <= 90){
+                    $index .= '_';
+                    $lcIndex{$i} = strtolower($lcIndex{$i});
+                }
+                $index .= $lcIndex{$i};
+            }
+            return $index;
+        }
+    }
+
 
     /**
      * @return mixed
@@ -85,6 +109,26 @@ class ModelData extends ModelObject
         $model = get_called_class();
         $prototype = new $model();
         return $prototype->getTableModel();
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     * @return null
+     */
+    public function __call($name, $arguments)
+    {
+        if(strpos($name,'get') === 0){
+            $index  = $this->propertyIndex(substr($name,3));
+            return isset($this->$index) ? $this->$index : null;
+        }elseif(
+            strpos($name,'set') === 0 &&
+            isset($arguments[0]) &&
+            (is_string($arguments[0]) || is_int($arguments[0]))
+        ){
+            $index  = $this->propertyIndex(substr($name,3));
+            $this->$index = $arguments[0];
+        }
     }
 
     /**

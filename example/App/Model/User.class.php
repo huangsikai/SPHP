@@ -1,6 +1,6 @@
 <?php
 /**
- * Describe:
+ * Describe: 用户模型
  * Author: Sky
  * Date: 2017/2/13
  */
@@ -13,24 +13,10 @@ use SPHPCore\Lib\Mvc\Model;
 class User extends Model
 {
      protected static $tableName = 'user';
-//     protected static $primaryKey = 'parent_id';
+     protected static $primaryKey = 'id';
 
-     public function beforeInsert(&$data)
-     {
-
-     }
-
-     public function afterInsert($data,$lastId){
-
-         echo 'last:'.$lastId;
-     }
-
-
-     public function beforeUpdate(&$data){
-        // print_r($this->id);
-     }
-     public function afterUpdate($data){
-
-     }
-
+    public function getUserDetail(){
+         echo 'UserModel里的getUserDetail方法';
+         hello();
+    }
 }

@@ -15,6 +15,6 @@ return array(
             SPHP_DB_CHARSET => 'utf8',
         ),
     ),
-    SPHP_FUNSTIONS => ['test','test2'],
+    SPHP_FUNSTIONS => array('test','test2'),
 
 );

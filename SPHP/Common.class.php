@@ -26,7 +26,7 @@ class Common {
             $link = trim($link,PATH_NOISE);
             if (!empty($dir) && $dir !== '/') {
                 if (strpos($link, $dir) !== 0)
-                    $link = rtrim($dir,PATH_NOISE) . '/' . $link;
+                    $link = '/'.trim($dir,PATH_NOISE) . '/' . $link;
             }else{
                 if (empty($dir)) $dir = '/';
                 $link = $dir . $link;

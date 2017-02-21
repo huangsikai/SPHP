@@ -66,7 +66,7 @@ class Db
      * @return mixed
      */
     public function exec($sql){
-        return $this->_connect->execute($sql);
+        return $this->_connect->exec($sql);
     }
 
     /**
