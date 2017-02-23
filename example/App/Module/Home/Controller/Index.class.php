@@ -8,6 +8,7 @@
 namespace App\Module\Home\Controller;
 
 
+use App\Model\User;
 use SPHPCore\Lib\Mvc\Controller;
 
 class Index extends Controller
@@ -15,5 +16,6 @@ class Index extends Controller
 
     public function index(){
 
+        $user = User::tb()->find();print_r($user);exit;
     }
 }

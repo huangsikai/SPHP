@@ -8,6 +8,7 @@
 namespace SPHPCore\Lib\Dao;
 
 
+use SPHPCore\Lib\Dao\Expression\Base;
 use SPHPCore\Lib\HookAction;
 
 class TableModel extends Table
@@ -59,10 +60,10 @@ class TableModel extends Table
      */
     public function find($primary = null){
         if(!empty($primary) && !empty($this->primaryKey))
-            $this->expression->setOptions(Expression::EXPLAIN_WHERE,array(array($this->primaryKey => $primary)));
-        $this->expression->setOptions(Expression::EXPLAIN_LIMIT,array(1));
+            $this->expression->setOptions(Base::EXPLAIN_WHERE,array(array($this->primaryKey => $primary)));
+        $this->expression->setOptions(Base::EXPLAIN_LIMIT,array(1));
         $this->expression->select();
-        $execute = $this->db->getConnect()->execute($this->expression->getExpres(),$this->expression->getParameter());
+        $execute = $this->db->getConnect(SPHP_DB_READ)->execute($this->expression->getExpres(),$this->expression->getParameter());
         $statement = $execute->getStatement();
         if($row = $execute->fetchRow()){
             $this->_prototype->setData($row);
@@ -78,7 +79,7 @@ class TableModel extends Table
      */
     public function findAll(){
         $this->expression->select();
-        $execute = $this->db->getConnect()->execute($this->expression->getExpres(),$this->expression->getParameter());
+        $execute = $this->db->getConnect(SPHP_DB_READ)->execute($this->expression->getExpres(),$this->expression->getParameter());
         $statement = $execute->getStatement();
         $result = new ModelObject();
         while($row = $execute->fetchRow()){

@@ -67,8 +67,8 @@ class HookAction
      */
     public static function doHook($name,$parameter = array()){
         if(isset(self::$_hooks[$name])){
-            arsort(self::$_hooks[$name]);
-            foreach(self::$_hooks[$name] as $hook){
+            krsort(self::$_hooks[$name]);
+            foreach(self::$_hooks[$name] as $k=>$hook){
                 try{
                     $hook($parameter);
                 }catch (SPHPException $e){

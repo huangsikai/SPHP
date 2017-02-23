@@ -8,6 +8,8 @@
 namespace SPHPCore\Lib\Dao;
 
 
+use SPHPCore\Lib\Dao\Expression\Base;
+
 class Table
 {
     protected 
@@ -22,7 +24,7 @@ class Table
     public function __construct()
     {
         $this->db = $GLOBALS[SPHP_ACTION]->getDb();
-        $this->expression = Expression::instance($this,$this->db->getConfig());
+        $this->expression = new Expression($this,$this->db->getConfig());
     }
 
 
@@ -109,7 +111,7 @@ class Table
         $result = false;
         if(!empty($data) && is_array($data)){
             $this->expression->insert($data);
-            $execute = $this->db->getConnect()->execute($this->expression->getExpres(),$this->expression->getParameter());
+            $execute = $this->db->getConnect(SPHP_DB_WRITE)->execute($this->expression->getExpres(),$this->expression->getParameter());
             $result = $execute->rowCount();
             if($result){
                 $lastId = $this->lastInsertId();
@@ -127,9 +129,9 @@ class Table
      */
     public function delete($primary = null){
         if(!empty($primary) && !empty($this->primaryKey))
-            $this->expression->setOptions(Expression::EXPLAIN_WHERE,array(array($this->primaryKey => $primary)));
+            $this->expression->setOptions(Base::EXPLAIN_WHERE,array(array($this->primaryKey => $primary)));
         $this->expression->delete();
-        $execute = $this->db->getConnect()->execute($this->expression->getExpres(),$this->expression->getParameter());
+        $execute = $this->db->getConnect(SPHP_DB_WRITE)->execute($this->expression->getExpres(),$this->expression->getParameter());
         return $execute->rowCount();
     }
 
@@ -143,9 +145,9 @@ class Table
         $result = false;
         if(!empty($data) && is_array($data)){
             if(!empty($primary) && !empty($this->primaryKey))
-                $this->expression->setOptions(Expression::EXPLAIN_WHERE,array(array($this->primaryKey => $primary)));
+                $this->expression->setOptions(Base::EXPLAIN_WHERE,array(array($this->primaryKey => $primary)));
             $this->expression->update($data);
-            $execute = $this->db->getConnect()->execute($this->expression->getExpres(),$this->expression->getParameter());
+            $execute = $this->db->getConnect(SPHP_DB_WRITE)->execute($this->expression->getExpres(),$this->expression->getParameter());
             $result = $execute->rowCount();
         }
         return $result;
@@ -158,10 +160,10 @@ class Table
      */
     public function find($primary = null){
         if(!empty($primary) && !empty($this->primaryKey))
-            $this->expression->setOptions(Expression::EXPLAIN_WHERE,array(array($this->primaryKey => $primary)));
-        $this->expression->setOptions(Expression::EXPLAIN_LIMIT,array(1));
+            $this->expression->setOptions(Base::EXPLAIN_WHERE,array(array($this->primaryKey => $primary)));
+        $this->expression->setOptions(Base::EXPLAIN_LIMIT,array(1));
         $this->expression->select();
-        $execute = $this->db->getConnect()->execute($this->expression->getExpres(),$this->expression->getParameter());
+        $execute = $this->db->getConnect(SPHP_DB_READ)->execute($this->expression->getExpres(),$this->expression->getParameter());
         if($row = $execute->fetchRow()){
             return $row;
         }else{
@@ -173,8 +175,8 @@ class Table
      * @return array
      */
     public function findAll(){
-        $this->expression->select();//echo $this->expression->getExpres();exit;
-        $execute = $this->db->getConnect()->execute($this->expression->getExpres(),$this->expression->getParameter());
+        $this->expression->select();
+        $execute = $this->db->getConnect(SPHP_DB_READ)->execute($this->expression->getExpres(),$this->expression->getParameter());
         $rows = array();
         while($row = $execute->fetchRow()){
             $rows[] = $row;

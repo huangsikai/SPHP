@@ -1,16 +1,13 @@
 <!DOCTYPE html>
 <html>
-<script type="application/javascript" src="<?php echo $this->link('Home/js/index.js');?>"></script>
 <head lang="en">
     <meta charset="UTF-8">
-    <title></title>
+    <title>测试钩子</title>
 </head>
 <body>
-<a href="<?php echo $this->link('index/detail',array('id'=>2,'type'=>'news'));?>">超链接</a>
+
 <?php
-echo $this->test;
-
+$this->doHook('test_hook',array(1));
 ?>
-
 </body>
 </html>

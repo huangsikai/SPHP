@@ -31,7 +31,7 @@ class Base extends Hook
     }
 
     /**
-     * 获取model数据之前
+     * 获取model数据后
      * @param string $modelName 模型名
      * @param array $data   数据
      */
@@ -78,7 +78,10 @@ class Base extends Hook
      */
     public function error($type, $message, $file, $line)
     {
-        // TODO: Implement error() method.
+        $appError = new AppError();
+        if($type == E_NOTICE){
+            $appError->notice();
+        }
     }
 
     /**

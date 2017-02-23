@@ -8,6 +8,7 @@ define('SPHP_FUNSTIONS','functions');
 
 define('SPHP_DB','db');
 define('SPHP_DB_ID','id');
+define('SPHP_DB_MODE','mode');
 define('SPHP_DB_HOST','host');
 define('SPHP_DB_USER','user');
 define('SPHP_DB_PORT','port');
@@ -16,6 +17,9 @@ define('SPHP_DB_PWD','pwd');
 define('SPHP_DB_DATABASE','database');
 define('SPHP_DB_PREFIX','prefix');
 define('SPHP_DB_CHARSET','charset');
+define('SPHP_DB_PRI','priority');
+define('SPHP_DB_WRITE','write');
+define('SPHP_DB_READ','read');
 
 define('SPHP_ROUTE','route');
 define('SPHP_ROUTE_BASIC','basic');

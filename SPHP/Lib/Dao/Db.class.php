@@ -18,62 +18,77 @@ class Db
         $_config;
 
     /**
+     * @param $mode
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getConnect($mode)
+    {
+        if(!isset($mode)) throw new \Exception('数据库操作模式没有明确');
+        if(!isset($this->_connect[$mode])) throw new \Exception('没有配置操作模式为'.$mode.'的数据库配置');
+        return $this->_connect[$mode];
+    }
+
+    /**
+     * @param $mode
+     * @param $connect
+     */
+    public function setConnect($mode,$connect)
+    {
+        $this->_connect[$mode] = $connect;
+    }
+
+    /**
+     * @param null $mode
      * @return mixed
      */
-    public function getConnect()
+    public function getConfig($mode = null)
     {
-        return $this->_connect;
+        return isset($mode) ? $this->_config[$mode] : $this->_config;
     }
 
     /**
-     * @param mixed $connect
+     * @param $mode
+     * @param $config
      */
-    public function setConnect($connect)
+    public function setConfig($mode,$config)
     {
-        $this->_connect = $connect;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getConfig()
-    {
-        return $this->_config;
-    }
-
-    /**
-     * @param mixed $config
-     */
-    public function setConfig($config)
-    {
-        $this->_config = $config;
+        $this->_config[$mode] = $config;
     }
 
     /**
      * Db constructor.
-     * @param $id
      */
-    public function __construct($id = 1)
+    public function __construct()
     {
-        $this->loadConfig($id);
-        $connect = new Connect($this->_config);
-        $this->_connect = $connect->factory();
+        $this->loadConfig();
+        $temp = array();
+        foreach($this->_config as $mode => $config){
+            if(!isset($temp[$config[SPHP_DB_ID]])){
+                $connect = new Connect($config);
+                $temp[$config[SPHP_DB_ID]] = $connect->factory();
+            }
+            $this->_connect[$mode] = $temp[$config['id']];
+        }
+        unset($temp);
     }
 
 
     /**
      * @param $sql
+     * @param string $mode
      * @return mixed
+     * @throws \Exception
      */
-    public function exec($sql){
-        return $this->_connect->exec($sql);
+    public function exec($sql, $mode = SPHP_DB_WRITE){
+        return $this->getConnect($mode)->exec($sql);
     }
 
     /**
      * @return $this
      */
     public function transaction() {
-        $this->_connect->startTransaction();
+        $this->getConnect(SPHP_DB_WRITE)->startTransaction();
         return $this;
     }
 
@@ -81,7 +96,7 @@ class Db
      * @return $this
      */
     public function commit() {
-        $this->_connect->commit();
+        $this->getConnect(SPHP_DB_WRITE)->commit();
         return $this;
     }
 
@@ -89,7 +104,7 @@ class Db
      * @return $this
      */
     public function rollback() {
-        $this->_connect->rollback();
+        $this->getConnect(SPHP_DB_WRITE)->rollback();
         return $this;
     }
 
@@ -97,24 +112,45 @@ class Db
      * @return mixed
      */
     public function lastInsertId(){
-        return $this->_connect->lastInsertId();
+        return $this->getConnect(SPHP_DB_WRITE)->lastInsertId();
     }
 
 
     /**
-     * @param $id
      * @throws \Exception
      */
-    private function loadConfig($id){
+    private function loadConfig(){
         $configs = Config::getValue(SPHP_DB);
         if(empty($configs) || !is_array($configs)){
             throw new \Exception("数据库配置没有配置或配置不正确");
         }
+        $modes = $priority = array();
         foreach($configs as $config){
-            if($id == $config[SPHP_DB_ID]){
-                $this->_config= $config;break;
+            isset($config[SPHP_DB_MODE]) || $config[SPHP_DB_MODE] = [SPHP_DB_WRITE,SPHP_DB_READ];
+            isset($config[SPHP_DB_PRI]) || $config[SPHP_DB_PRI] = 1;
+            foreach($config[SPHP_DB_MODE] as $mode){
+                $modes[$mode][$config[SPHP_DB_PRI]] = $config;
+                $priority[$mode][] = $config[SPHP_DB_PRI];
             }
         }
+        foreach($priority as $mode => $pris){
+            $this->_config[$mode] = $modes[$mode][$this->priority($pris)];
+        }
+    }
+
+    private function priority($proArr){
+        $result = 0;
+        $proSum = array_sum($proArr);
+        foreach ($proArr as $key => $proCur) {
+            $randNum = mt_rand(1, $proSum);
+            if ($randNum <= $proCur) {
+                $result = $proCur;
+                break;
+            } else {
+                $proSum -= $proCur;
+            }
+        }
+        return $result;
     }
 
 }

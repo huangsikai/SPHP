@@ -80,6 +80,7 @@ class Init
             'traceStr'=>$e->getTraceAsString(),
         );
         if(DEBUG){
+            header('Content-Type:text/html; charset='.Config::getValue(SPHP_CHARSET));
             print_r($exception);
         }
         HookAction::doHook('exception',$exception);
@@ -97,6 +98,7 @@ class Init
     public static function SPHPError($type, $message, $file, $line)
     {
         if(DEBUG){
+            header('Content-Type:text/html; charset='.Config::getValue(SPHP_CHARSET));
             print_r(array(
                 'type'=>$type,
                 'message'=>$message,
