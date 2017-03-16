@@ -1,5 +1,5 @@
 <?php
-define('SPHP_ACTION','SPHPAction');
+define('SPHP_DISPATCH','SPHPDispatch');
 define('SPHP_ROOT_DIR','rootdir');
 define('SPHP_TPL_SUFFIX','suffix');
 define('SPHP_CHARSET','charset');

@@ -16,7 +16,7 @@ class Route
     public function resolve($request)
     {
         $uri = $_SERVER['REQUEST_URI'];
-        $uriHash = md5($uri);
+        $uriHash = md5(serialize($uri));
         if(isset($GLOBALS['SPHPResolve'.$uriHash])){
             $request = $GLOBALS['SPHPResolve'.$uriHash];
             return $request;

@@ -23,7 +23,7 @@ class Table
      */
     public function __construct()
     {
-        $this->db = $GLOBALS[SPHP_ACTION]->getDb();
+        $this->db = $GLOBALS[SPHP_DISPATCH]->getDb();
         $this->expression = new Expression($this,$this->db->getConfig());
     }
 

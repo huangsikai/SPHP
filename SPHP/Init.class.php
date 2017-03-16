@@ -8,7 +8,7 @@
 namespace SPHPCore;
 
 
-use SPHPCore\Lib\Action;
+use SPHPCore\Lib\Dispatch;
 use SPHPCore\Lib\Config;
 use SPHPCore\Lib\HookAction;
 
@@ -114,7 +114,7 @@ class Init
      * @throws \Exception
      */
     public function start(){
-        $GLOBALS[SPHP_ACTION] = new Action();
-        $GLOBALS[SPHP_ACTION]->dispatch();
+        $GLOBALS[SPHP_DISPATCH] = new Dispatch();
+        $GLOBALS[SPHP_DISPATCH]->start();
     }
 }

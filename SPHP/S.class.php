@@ -10,7 +10,7 @@ if(version_compare(PHP_VERSION,'5.3.0','<')){
 }
 defined('DEBUG') OR define('DEBUG',false);
 defined('SUB_DIR') OR define('SUB_DIR','');
-defined('BASE_PATH') OR define('BASE_PATH',rtrim($_SERVER['DOCUMENT_ROOT'],'/').(SUB_DIR ? '/'.trim(SUB_DIR,'/') : ''));
+defined('BASE_PATH') OR define('BASE_PATH',dirname($_SERVER['SCRIPT_FILENAME']). '/../');
 defined('RUNTIME_DIR') OR define('RUNTIME_DIR','Runtime');
 defined('APP_NAME') OR define('APP_NAME','App');
 defined('MODULE') OR define('MODULE','Home');

@@ -91,7 +91,7 @@ class Common {
      * @return bool
      */
     public static function loadFile($file){
-        $fileHash = md5($file);
+        $fileHash = md5(serialize($file));
         if(!isset(self::$_loadFiles[$fileHash])){
             if(is_file($file)){
                 self::$_loadFiles[$fileHash] = include_once $file;

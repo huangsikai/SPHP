@@ -14,9 +14,10 @@ class ModelObject extends \ArrayObject
 
     /**
      * ModelObject constructor.
+     * @param array $data
      */
-    public function __construct() {
-        $this->setFlags(\ArrayObject::ARRAY_AS_PROPS);
+    public function __construct($data = array()) {
+        parent::__construct($data,\ArrayObject::ARRAY_AS_PROPS);
     }
 
     /**
@@ -35,4 +36,23 @@ class ModelObject extends \ArrayObject
     public function isEmpty(){
         return $this->count() <= 0;
     }
+
+    /**
+     * 给每个元素执行个回调
+     *
+     * @param  callable $callback
+     * @return $this
+     */
+    public function each(callable $callback)
+    {
+        $array = $this->getArrayCopy();
+        foreach ($array as $key => $item) {
+            if ($callback($item, $key) === false) {
+                break;
+            }
+        }
+
+        return $this;
+    }
+
 }

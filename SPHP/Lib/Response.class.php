@@ -17,7 +17,7 @@ class Response
         TEXT = 'text',
         VIEW = 'view';
     private
-        $_action,
+        $_dispatch,
         $_expire;
 
     private $_types = array(
@@ -38,7 +38,7 @@ class Response
 
 
     public function __construct(){
-        $this->_action = $GLOBALS[SPHP_ACTION];
+        $this->_dispatch = $GLOBALS[SPHP_DISPATCH];
     }
 
 
@@ -85,7 +85,7 @@ class Response
     public function view($viewName = ""){
         $this->_type = self::VIEW;
         $this->sendHeader();
-        $view = $this->_action->getView();
+        $view = $this->_dispatch->getView();
         if(!empty($viewName))
             $view->setViewName($viewName);
         $view->display();
@@ -144,7 +144,7 @@ class Response
 
 
     public function __destruct() {
-        $this->_action = null;
+        $this->_dispatch = null;
         $this->_expire = null;
     }
 }

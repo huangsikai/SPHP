@@ -10,27 +10,57 @@ namespace SPHPCore\Lib\Dao;
 
 class ModelData extends ModelObject
 {
-    private
-        $_data,
-        $_statement;
+
+    private static $_tableModel;
+    private $_data;
+    private $_update;
+    private $_statement;
+
+    protected $relation;
+
 
     /**
      * @return mixed
      */
-    private function getTableModel()
+    protected static function getTableModel()
     {
-        $tableModel = new TableModel();
-        $tableModel->setTableName($this->__tableName());
-        $tableModel->setPrimaryKey($this->__primaryKey());
-        $tableModel->setPrototype($this);
-        return $tableModel;
+        if(empty(self::$_tableModel))
+            self::$_tableModel = new TableModel(get_called_class());
+        return self::$_tableModel;
     }
+
+    /**
+     * @param mixed $tableModel
+     */
+    public function setTableModel($tableModel)
+    {
+        $this->_tableModel = $tableModel;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRelation()
+    {
+        return self::$relation;
+    }
+
+    /**
+     * @param mixed $relation
+     */
+    public function setRelation($relation)
+    {
+        $this->relation[] = $relation;
+        parent::offsetSet($relation->getName(), $relation);
+    }
+
+
 
     /**
      * @param $index
      * @return string
      */
-    private function propertyIndex($index){
+    private function __propertyIndex($index){
         $lcIndex = lcfirst($index);
         if(isset($this->$index)){
             return $index;
@@ -70,6 +100,25 @@ class ModelData extends ModelObject
     /**
      * @return mixed
      */
+    public function getUpdate()
+    {
+        return $this->_update;
+    }
+
+    /**
+     * @param $index
+     * @param $value
+     */
+    public function setUpdate($index,$value)
+    {
+        $this->_update[$index] = $value;
+    }
+
+
+
+    /**
+     * @return mixed
+     */
     public function getStatement()
     {
         return $this->_statement;
@@ -85,10 +134,12 @@ class ModelData extends ModelObject
 
     /**
      * ModelData constructor.
+     * @param array $data
      */
-    public function __construct()
+    public function __construct($data = array())
     {
-        parent::__construct();
+        parent::__construct($data);
+        $this->setData($data);
     }
 
 
@@ -102,16 +153,6 @@ class ModelData extends ModelObject
 
 
     /**
-     * @return mixed
-     */
-    public static function tb()
-    {
-        $model = get_called_class();
-        $prototype = new $model();
-        return $prototype->getTableModel();
-    }
-
-    /**
      * @param $name
      * @param $arguments
      * @return null
@@ -119,16 +160,32 @@ class ModelData extends ModelObject
     public function __call($name, $arguments)
     {
         if(strpos($name,'get') === 0){
-            $index  = $this->propertyIndex(substr($name,3));
+            $index  = $this->__propertyIndex(substr($name,3));
             return isset($this->$index) ? $this->$index : null;
         }elseif(
             strpos($name,'set') === 0 &&
             isset($arguments[0]) &&
             (is_string($arguments[0]) || is_int($arguments[0]))
         ){
-            $index  = $this->propertyIndex(substr($name,3));
+            $index  = $this->__propertyIndex(substr($name,3));
             $this->$index = $arguments[0];
+        }else{
+
         }
+    }
+
+    /**
+     * @param mixed $index
+     * @param mixed $newval
+     */
+    public function offsetSet($index, $newval)
+    {
+        $data = $this->getData();
+        if(!isset($data[$index]) || $data[$index] != $newval){
+            parent::offsetSet($index, $newval);
+            $this->setUpdate($index,$newval);
+        }
+        unset($data);
     }
 
     /**
@@ -137,29 +194,33 @@ class ModelData extends ModelObject
     public function save()
     {
         $result = 0;
-        $update = array();
         $isNew = $this->isNew();
-        if($isNew){
-            $update = $this->toArray();
-        }else{
-            $data = $this->getData();
-            $primaryKey = $this->__primaryKey();
-            if(!empty($primaryKey) && !empty($data[$primaryKey])){
-                $primary = $data[$primaryKey];
-                foreach($this->toArray() as $field => $value){
-                    if(!isset($data[$field]) || $data[$field] != $value){
-                        $update[$field] = $value;
-                    }
-                }
-            }
-            unset($data,$primaryKey);
-        }
+        $update = $this->getUpdate();
         if(!empty($update)){
             $tableModel = $this->getTableModel();
-            $result = $isNew ? $tableModel->insert($update) : $tableModel->update($update,$primary);
+            $tableModel->setPrototype($this);
+            if($isNew){
+                $result = $tableModel->insert($update);
+            }else{
+                $data = $this->getData();
+                $primaryKey = $this::__primaryKey();
+                if(!empty($primaryKey) && !empty($data[$primaryKey])){
+                    $primary = $data[$primaryKey];
+                    $result = $tableModel->update($update,$primary);
+                    if(!Relation::notifyRelation($this->relation,__FUNCTION__)){
+                        $result = false;
+                    }
+                    unset($data,$primaryKey,$primary);
+                }
+            }
         }
         unset($update);
         return $result;
     }
+
+    public function delete(){}
+
+
+
 
 }

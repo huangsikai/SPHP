@@ -15,15 +15,16 @@ use SPHPCore\Lib\HookAction;
 class View
 {
     private
-        $_action,
+        $_dispatch,
         $_layout,
-        $_viewName;
+        $_viewName,
+        $_data;
 
     /**
      * @return string
      */
     private function getDefaultView(){
-        return $this->_action->getRequest()->getCurrentControllerName().'/'.$this->_action->getRequest()->getCurrentActionName();
+        return $this->_dispatch->getRequest()->getCurrentControllerName().'/'.$this->_dispatch->getRequest()->getCurrentActionName();
     }
 
     /**
@@ -40,7 +41,7 @@ class View
      * @return mixed
      */
     public function getControllerName(){
-        return $this->_action->getRequest()->getCurrentControllerName();
+        return $this->_dispatch->getRequest()->getCurrentControllerName();
     }
 
     /**
@@ -48,7 +49,7 @@ class View
      * @return mixed
      */
     public function getActionName(){
-        return $this->_action->getRequest()->getCurrentActionName();
+        return $this->_dispatch->getRequest()->getCurrentActionName();
     }
 
     /**
@@ -84,11 +85,30 @@ class View
     }
 
     /**
+     * @param $name
+     * @return string
+     */
+    public function getData($name)
+    {
+        return isset($this->_data[$name]) ? $this->_data[$name] : '';
+    }
+
+    /**
+     * @param $name
+     * @param $value
+     */
+    public function setData($name,$value)
+    {
+        $this->_data[$name] = $value;
+    }
+
+
+    /**
      * View constructor.
      */
     public function __construct()
     {
-        $this->_action = $GLOBALS[SPHP_ACTION];
+        $this->_dispatch = $GLOBALS[SPHP_DISPATCH];
     }
 
     /**
@@ -147,7 +167,7 @@ class View
      */
     public function __get($name)
     {
-        return $this->_action->getAssign($name) ? $this->_action->getAssign($name) : null;
+        return $this->getData($name);
     }
 
     /**
@@ -156,7 +176,7 @@ class View
      */
     public function __set($name, $value)
     {
-        $this->_action->setAssign($name,$value);
+        $this->setData($name,$value);
     }
 
     /**
@@ -165,7 +185,7 @@ class View
      */
     public function __isset($name)
     {
-        return $this->_action->getAssign($name) ? true : false;
+        return $this->_dispatch->getAssign($name) ? true : false;
     }
 
     /**
@@ -173,7 +193,7 @@ class View
      */
     public function __unset($name)
     {
-        $this->_action->setAssign($name);
+        $this->_dispatch->setAssign($name);
     }
 
     /**

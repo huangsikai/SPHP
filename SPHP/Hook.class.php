@@ -13,7 +13,7 @@ abstract class Hook
 {
     public $on = false;
     abstract public function controller($controllerName,$actionName);
-    abstract public function model($modelName,$data);
+    abstract public function model($model);
     abstract public function layout($layoutName);
     abstract public function template($viewName);
     abstract public function exception($message,$trace,$traceStr);

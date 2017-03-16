@@ -10,18 +10,36 @@ namespace SPHPCore\Lib\Dao;
 
 use SPHPCore\Lib\Dao\Expression\Base;
 use SPHPCore\Lib\HookAction;
+use SPHPCore\Lib\Mvc\Model;
 
 class TableModel extends Table
 {
     private $_prototype;
 
-    /**
-     * @param $prototype
-     */
-    public function setPrototype($prototype){
-        $this->_prototype = $prototype;
-        unset($prototype);
+    public function __construct($model)
+    {
+        parent::__construct();
+        $this->setTableName($model::__tableName());
+        $this->setPrimaryKey($model::__primaryKey());
+        $this->model = $model;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getPrototype()
+    {
+        return $this->_prototype;
+    }
+
+    /**
+     * @param mixed $prototype
+     */
+    public function setPrototype($prototype)
+    {
+        $this->_prototype = $prototype;
+    }
+
 
     /**
      * @param $data
@@ -66,16 +84,18 @@ class TableModel extends Table
         $execute = $this->db->getConnect(SPHP_DB_READ)->execute($this->expression->getExpres(),$this->expression->getParameter());
         $statement = $execute->getStatement();
         if($row = $execute->fetchRow()){
-            $this->_prototype->setData($row);
-            $this->_prototype->exchangeArray($row);
-            $this->_prototype->setStatement($statement);
-            HookAction::doHook('model',array(get_class($this->_prototype),$row));
+            $prototype = new $this->model($row);
+            $prototype->setStatement($statement);
+            HookAction::doHook('model',array($prototype));
+        }else{
+            $prototype = new $this->model();
         }
-        return $this->_prototype;
+        unset($execute,$statement);
+        return $prototype;
     }
 
     /**
-     * @return array|DataObject
+     * @return array|ModelObject
      */
     public function findAll(){
         $this->expression->select();
@@ -83,12 +103,11 @@ class TableModel extends Table
         $statement = $execute->getStatement();
         $result = new ModelObject();
         while($row = $execute->fetchRow()){
-            $prototype = clone $this->_prototype;
-            $prototype->setData($row);
-            $prototype->exchangeArray($row);
+            $prototype = new $this->model($row);
             $prototype->setStatement($statement);
             $result[] = $prototype;
-            HookAction::doHook('model',array(get_class($prototype),$row));
+            HookAction::doHook('model',array($prototype));
+            unset($prototype);
         }
         unset($execute,$statement);
         return $result;

@@ -13,7 +13,7 @@ use SPHPCore\Lib\Request\Session;
 
 class Request
 {
-    private $_action;
+    private $_dispatch;
     private $_data;
     private $_parameterInstance;
     private $_sessionInstance;
@@ -172,7 +172,7 @@ class Request
      */
     public function __construct()
     {
-        $this->_action = $GLOBALS[SPHP_ACTION];
+        $this->_dispatch = $GLOBALS[SPHP_DISPATCH];
         $route = new Route();
         $route->resolve($this);
     }

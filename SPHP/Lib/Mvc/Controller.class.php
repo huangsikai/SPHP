@@ -12,7 +12,7 @@ use SPHPCore\Lib\HookAction;
 
 abstract class Controller
 {
-    private $_action;
+    private $_dispatch;
     protected $request;
     protected $response;
 
@@ -22,7 +22,7 @@ abstract class Controller
      * @param $actionName
      */
     protected function forward($controllerName,$actionName){
-        $this->_action->call($controllerName,$actionName);
+        $this->_dispatch->call($controllerName,$actionName);
     }
 
     /**
@@ -31,26 +31,25 @@ abstract class Controller
      * @param $value
      */
     protected function assign($index,$value){
-        $this->_action->setAssign($index,$value);
-    }
-
-    /**
-     * Controller constructor.
-     * @param $request
-     * @param $response
-     */
-    final public function __construct($request,$response){
-        $this->_action = $GLOBALS[SPHP_ACTION];
-        $this->request = $request;
-        $this->response = $response;
-        unset($request,$response);
-        $this->__init();
+        $this->_dispatch->getView()->setData($index,$value);
     }
 
     /**
      * 初始化方法 给子控制器重写
      */
     protected function __init(){}
+
+    /**
+     * Controller constructor.
+     * @param $
+     */
+    final public function __construct(){
+        $this->_dispatch = $GLOBALS[SPHP_DISPATCH];
+        $this->request = $GLOBALS[SPHP_DISPATCH]->getRequest();
+        $this->response = $GLOBALS[SPHP_DISPATCH]->getResponse();
+        $this->__init();
+    }
+
 
     /**
      * 未知方法 给子控制器重写
@@ -62,7 +61,7 @@ abstract class Controller
      * @param $layout
      */
     public function setLayout($layout){
-        $this->_action->getView()->setLayout($layout);
+        $this->_dispatch->getView()->setLayout($layout);
     }
 
     /**
@@ -70,7 +69,7 @@ abstract class Controller
      * @return mixed
      */
     public function db(){
-       return $this->_action->getDb();
+       return $this->_dispatch->getDb();
     }
 
     /**
@@ -80,7 +79,7 @@ abstract class Controller
      * @return mixed
      */
     public function tb($tableName, $primary = "id"){
-        return $this->_action->getTable($tableName, $primary);
+        return $this->_dispatch->getTable($tableName, $primary);
     }
 
     /**

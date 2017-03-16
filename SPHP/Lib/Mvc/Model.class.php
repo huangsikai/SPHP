@@ -10,6 +10,7 @@ namespace SPHPCore\Lib\Mvc;
 
 
 use SPHPCore\Lib\Dao\ModelData;
+use SPHPCore\Lib\Dao\Relation\HasOne;
 use SPHPCore\Lib\HookAction;
 
 abstract class Model extends ModelData
@@ -21,12 +22,12 @@ abstract class Model extends ModelData
     /**
      * @return string
      */
-    protected function __tableName()
+    public static function __tableName()
     {
-        if(!empty($this::$tableName)){
-            return $this::$tableName;
+        if(!empty(static::$tableName)){
+            return static::$tableName;
         }else{
-            $ref = new \ReflectionObject($this);
+            $ref = new \ReflectionClass(get_called_class());
             return $ref->getShortName();
         }
     }
@@ -34,23 +35,29 @@ abstract class Model extends ModelData
     /**
      * @return string
      */
-    protected function __primaryKey()
+    public static function __primaryKey()
     {
-        if(!empty($this::$primaryKey)){
-            return $this::$primaryKey;
-        }else{
-            return 'id';
-        }
+        return !empty(static::$primaryKey) ? static::$primaryKey : 'id';
+    }
+
+    /**
+     * Model constructor.
+     * @param array $data
+     */
+    final public function __construct($data = array()){
+        parent::__construct($data);
+        $this->__init();
     }
 
 
     /**
-     * Model constructor.
+     * @return mixed
      */
-    final public function __construct(){
-        parent::__construct();
-        $this->__init();
+    public static function tb()
+    {
+        return self::getTableModel();
     }
+
 
     /**
      * 添加钩子
@@ -100,6 +107,18 @@ abstract class Model extends ModelData
      * @param $data
      */
     public function afterUpdate($data){}
+
+    public function hasOne($name, $model, $foreignKey, $primaryKey = ''){
+        if(is_subclass_of($model,__CLASS__)){
+            $primaryKey = $primaryKey ?: $this::__primaryKey();
+            $this->setRelation(new HasOne($this,$model,$foreignKey,$primaryKey,$name));
+        }
+    }
+
+
+    public function belongsTo($model,$foreignKey,$primaryKey,$alias){
+
+    }
 
 
 }
