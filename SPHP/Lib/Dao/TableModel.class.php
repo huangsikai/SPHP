@@ -29,6 +29,8 @@ class TableModel extends Table
      */
     public function getPrototype()
     {
+        if(empty($this->_prototype))
+            $this->_prototype = new $this->model();
         return $this->_prototype;
     }
 
@@ -48,10 +50,10 @@ class TableModel extends Table
     public function insert($data)
     {
         $result = false;
-        if(false !== $this->_prototype->beforeInsert($data)){
+        if(false !== $this->getPrototype()->beforeInsert($data)){
             $result = parent::insert($data);
             if($result)
-                $this->_prototype->afterInsert($data,$result);
+                $this->getPrototype()->afterInsert($data,$result);
         }
         return $result;
     }
@@ -64,10 +66,10 @@ class TableModel extends Table
     public function update($data, $primary = null)
     {
         $result = false;
-        if(false !== $this->_prototype->beforeUpdate($data)){
+        if(false !== $this->getPrototype()->beforeUpdate($data)){
             $result = parent::update($data, $primary);
             if($result)
-                $this->_prototype->afterUpdate($data);
+                $this->getPrototype()->afterUpdate($data);
         }
         return $result;
     }
