@@ -204,22 +204,41 @@ class ModelData extends ModelObject
                 $result = $tableModel->insert($update);
             }else{
                 $data = $this->getData();
-                $primaryKey = $this::__primaryKey();
+                $primaryKey = $this::_primaryKey();
                 if(!empty($primaryKey) && !empty($data[$primaryKey])){
                     $primary = $data[$primaryKey];
                     $result = $tableModel->update($update,$primary);
                     if(!Relation::notifyRelation($this->relation,__FUNCTION__)){
                         $result = false;
                     }
-                    unset($data,$primaryKey,$primary);
                 }
+                unset($data,$primaryKey,$primary);
             }
         }
         unset($update);
         return $result;
     }
 
-    public function delete(){}
+    /**
+     * @return bool|int
+     */
+    public function delete(){
+        $result = 0;
+        if(!$this->isNew()){
+            $data = $this->getData();
+            $primaryKey = $this::_primaryKey();
+            if(!empty($primaryKey) && !empty($data[$primaryKey])){
+                $tableModel = $this->getTableModel();
+                $tableModel->setPrototype($this);
+                $result = $tableModel->delete($data[$primaryKey]);
+                if(!Relation::notifyRelation($this->relation,__FUNCTION__)){
+                    $result = false;
+                }
+            }
+            unset($data,$primaryKey);
+        }
+        return $result;
+    }
 
 
 
