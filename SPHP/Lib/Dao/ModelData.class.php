@@ -24,9 +24,10 @@ class ModelData extends ModelObject
      */
     protected static function getTableModel()
     {
-        if(empty(self::$_tableModel))
-            self::$_tableModel = new TableModel(get_called_class());
-        return self::$_tableModel;
+        $modelHash = md5(serialize(get_called_class()));
+        if(empty(self::$_tableModel[$modelHash]))
+            self::$_tableModel[$modelHash] = new TableModel(get_called_class());
+        return self::$_tableModel[$modelHash];
     }
 
     /**

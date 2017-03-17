@@ -37,7 +37,7 @@ abstract class Controller
     /**
      * 初始化方法 给子控制器重写
      */
-    protected function __init(){}
+    protected function _init(){}
 
     /**
      * Controller constructor.
@@ -47,7 +47,7 @@ abstract class Controller
         $this->_dispatch = $GLOBALS[SPHP_DISPATCH];
         $this->request = $GLOBALS[SPHP_DISPATCH]->getRequest();
         $this->response = $GLOBALS[SPHP_DISPATCH]->getResponse();
-        $this->__init();
+        $this->_init();
     }
 
 

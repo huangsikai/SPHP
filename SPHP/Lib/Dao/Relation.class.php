@@ -10,7 +10,7 @@ namespace SPHPCore\Lib\Dao;
 
 use SPHPCore\Lib\Dao\Relation\HasOne;
 
-abstract class Relation
+abstract class Relation implements \ArrayAccess
 {
 
     protected $parent;
@@ -83,6 +83,26 @@ abstract class Relation
             }
         }
         return $result;
+    }
+
+    public function offsetExists($offset)
+    {
+        // TODO: Implement offsetExists() method.
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->$offset;
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->$offset = $value;
+    }
+
+    public function offsetUnset($offset)
+    {
+        // TODO: Implement offsetUnset() method.
     }
 
 }

@@ -51,7 +51,6 @@ class ModelObject extends \ArrayObject
                 break;
             }
         }
-
         return $this;
     }
 

@@ -46,6 +46,8 @@ class HasOne extends Relation
         return $model->isNew() ? '' : $model->$name;
     }
 
+
+
     /**
      * @param $name
      * @param $value

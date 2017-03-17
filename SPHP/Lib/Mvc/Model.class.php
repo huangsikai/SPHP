@@ -10,6 +10,7 @@ namespace SPHPCore\Lib\Mvc;
 
 
 use SPHPCore\Lib\Dao\ModelData;
+use SPHPCore\Lib\Dao\Relation\HasMany;
 use SPHPCore\Lib\Dao\Relation\HasOne;
 use SPHPCore\Lib\HookAction;
 
@@ -22,7 +23,7 @@ abstract class Model extends ModelData
     /**
      * @return string
      */
-    public static function __tableName()
+    public static function _tableName()
     {
         if(!empty(static::$tableName)){
             return static::$tableName;
@@ -35,7 +36,7 @@ abstract class Model extends ModelData
     /**
      * @return string
      */
-    public static function __primaryKey()
+    public static function _primaryKey()
     {
         return !empty(static::$primaryKey) ? static::$primaryKey : 'id';
     }
@@ -46,7 +47,7 @@ abstract class Model extends ModelData
      */
     final public function __construct($data = array()){
         parent::__construct($data);
-        $this->__init();
+        $this->_init();
     }
 
 
@@ -81,7 +82,7 @@ abstract class Model extends ModelData
     /**
      * 初始化方法 给子控制器重写
      */
-    public function __init(){}
+    public function _init(){}
 
     /**
      * 添加数据前
@@ -110,11 +111,17 @@ abstract class Model extends ModelData
 
     public function hasOne($name, $model, $foreignKey, $primaryKey = ''){
         if(is_subclass_of($model,__CLASS__)){
-            $primaryKey = $primaryKey ?: $this::__primaryKey();
+            $primaryKey = $primaryKey ?: $this::_primaryKey();
             $this->setRelation(new HasOne($this,$model,$foreignKey,$primaryKey,$name));
         }
     }
 
+    public function hasMany($name, $model, $foreignKey, $primaryKey = ''){
+        if(is_subclass_of($model,__CLASS__)){
+            $primaryKey = $primaryKey ?: $this::_primaryKey();
+            $this->setRelation(new HasMany($this,$model,$foreignKey,$primaryKey,$name));
+        }
+    }
 
     public function belongsTo($model,$foreignKey,$primaryKey,$alias){
 

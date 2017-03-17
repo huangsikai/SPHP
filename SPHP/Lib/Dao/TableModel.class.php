@@ -19,8 +19,8 @@ class TableModel extends Table
     public function __construct($model)
     {
         parent::__construct();
-        $this->setTableName($model::__tableName());
-        $this->setPrimaryKey($model::__primaryKey());
+        $this->setTableName($model::_tableName());
+        $this->setPrimaryKey($model::_primaryKey());
         $this->model = $model;
     }
 
