@@ -20,7 +20,6 @@ class Dispatch {
         $_response,
         $_controller,
         $_view,
-        $_assign,
         $_db;
 
     public function __construct(){}
@@ -62,7 +61,9 @@ class Dispatch {
      */
     public function getView()
     {
-        if(!isset($this->_view) || !($this->_view instanceof \SPHPCore\Lib\Mvc\View)){
+        if(!isset($this->_view) ||
+            !($this->_view instanceof \SPHPCore\Lib\Mvc\View))
+        {
             $this->_view = new View();
         }
         return $this->_view;
@@ -93,30 +94,15 @@ class Dispatch {
         $this->_controller = $controller;
     }
 
-    /**
-     * @param $index
-     * @return null
-     */
-    public function getAssign($index)
-    {
-        return isset($this->_assign[$index]) ? $this->_assign[$index] : null;
-    }
-
-    /**
-     * @param $index
-     * @param $value
-     */
-    public function setAssign($index,$value = null)
-    {
-        !empty($index) ? $this->_assign[$index] = $value : true;
-    }
 
     /**
      * @return mixed
      */
     public function getDb()
     {
-        if(!isset($this->_db) || !($this->_db instanceof \SPHPCore\Lib\Dao\Db)){
+        if(!isset($this->_db) ||
+            !($this->_db instanceof \SPHPCore\Lib\Dao\Db))
+        {
             $this->_db = new Db();
         }
         return $this->_db;
@@ -133,7 +119,6 @@ class Dispatch {
         $table->setPrimaryKey($primary);
         return $table;
     }
-
 
 
     /**
