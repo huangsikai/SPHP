@@ -116,10 +116,14 @@ abstract class Model extends ModelData
         }
     }
 
-    public function hasMany($name, $model, $foreignKey, $primaryKey = ''){
+    public function hasMany($name, $model, $foreignKey, $primaryKey = '',$limit = '',$orderby = '',$where = ''){
         if(is_subclass_of($model,__CLASS__)){
             $primaryKey = $primaryKey ?: $this::_primaryKey();
-            $this->setRelation(new HasMany($this,$model,$foreignKey,$primaryKey,$name));
+            $many = new HasMany($this,$model,$foreignKey,$primaryKey,$name);
+            $many->setLimit($limit);
+            $many->setWhere($where);
+            $many->setOrderby($orderby);
+            $this->setRelation($many);
         }
     }
 

@@ -15,6 +15,33 @@ class HasMany extends Relation
 {
     protected $collection;
 
+    protected $where;
+    protected $orderby;
+    protected $limit;
+
+    /**
+     * @param mixed $where
+     */
+    public function setWhere($where)
+    {
+        $this->where = $where;
+    }
+
+    /**
+     * @param mixed $orderby
+     */
+    public function setOrderby($orderby)
+    {
+        $this->orderby = $orderby;
+    }
+
+    /**
+     * @param mixed $limit
+     */
+    public function setLimit($limit)
+    {
+        $this->limit = $limit;
+    }
 
     /**
      * @return mixed
@@ -22,7 +49,14 @@ class HasMany extends Relation
     public function getCollection(){
         if(empty($this->collection)){
             $model = $this->modelName;
-            $this->collection = $model::tb()->where(array($this->foreignKey => $this->parent[$this->primaryKey]))->findAll();
+            $tb = $model::tb()->where(array($this->foreignKey => $this->parent[$this->primaryKey]));
+            if(!empty($this->where))
+                $tb->where($this->where);
+            if(!empty($this->orderby))
+                $tb->orderby($this->orderby);
+            if(!empty($this->limit))
+                $tb->limit($this->limit);
+            $this->collection = $tb->findAll();
         }
         return $this->collection;
     }
